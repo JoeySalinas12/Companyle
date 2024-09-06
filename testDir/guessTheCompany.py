@@ -20,3 +20,4 @@ URL = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
 
 content = get_url_content(URL)
 print(get_table_from_url_content(content))
+
