@@ -45,6 +45,35 @@ def pick_random_company(sp500_df: pd.DataFrame) -> dict:
     
     return random_company
 
+def get_company_links_from_page(company_page_link: str) -> pd.DataFrame:
+    """_summary_
+
+    Args:
+        sp500_df (pd.DataFrame): _description_
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+
+    response = requests.get(URL)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Find the table
+    table = soup.find('table', {'class': 'wikitable'})
+    
+    # Find all of the links in the second column of the table
+    links = []
+    for row in table.find_all('tr')[1:]: # skip the header row
+        cells = row.find_all('td')
+        if cells:
+            link_tag = cells[1].find('a')  # Adjust the index based on the column containing the link
+            if link_tag and 'href' in link_tag.attrs:
+                links.append(link_tag['href'])
+
+    return links
+
+def 
+
 
 URL = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
 table_number = 0
