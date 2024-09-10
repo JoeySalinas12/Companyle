@@ -1,7 +1,5 @@
 import requests
-import random
 import pandas as pd
-from bs4 import BeautifulSoup
 
 
 def get_df_from_url(url: str) -> pd.DataFrame:
