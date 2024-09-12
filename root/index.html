@@ -2,11 +2,40 @@
 <html> 
 <head>
     <style>
-    h1 {text-align: center;}
-    p {text-align: center;}
-    header {text-align: center;}
-    img {width:100%; height:100%;}
+
+    h1 {text-align: center; margin: 30 px;}
+    h2 {text-align: center; margin: 30 px;}
+    input {text-align: center; margin: 10 px;}
+    button {text-align: center; margin: 10 px;}
+    p {text-align: center; margin: 10 px;}
+    header {text-align: center; margin: 15 px;}
+    li {text-align: justify; margin: 15 px;}
+    img {width:100%; height:100%; margin: 20 px;}
+
+    #Guess1 {            display: none;        }
+    #Guess2 {            display: none;        }
+    #Guess3 {            display: none;        }
+    #Guess4 {            display: none;        }
+    #Guess5 {            display: none;        }
+    #Guess6 {            display: none;        }
+
 </style>
+<script>
+    function getUserInput() {
+
+        const userInput = document.getElementById("userInput").value;
+        alert("You typed: " + userInput);
+
+        const paragraph = document.getElementById("Guess1");
+            paragraph.style.display = "block";
+            paragraph.innerHTML = "Your first guess: " + userInput
+
+        const button = document.getElementById("guessButton");
+            button.innerHTML = "Guess again!"
+
+        
+    }
+</script>
 </head>
 <body
     <div>
@@ -29,7 +58,22 @@
     <header> 
             <img src="./images/pokemon.jpg" alt="WOWOWOWOW""></img>
     </header>
-    <div class="card" style="width:400px">
+    <div style="margin-top: 50px;"></div> <!-- Adds 50px vertical space -->
+    <div>
+        <h2>Enter a string below:</h2>
+        <input type="text" id="userInput" placeholder="Take a guess...">
+        <button id="guessButton" onclick="getUserInput()">Guess</button>
+    </div>
+    <div>
+        <p id="Guess1">Your first guess:</p>
+        <p id="Guess2">Your second guess:</p>
+        <p id="Guess3">Your third guess:</p>
+        <p id="Guess4">Your fourth guess:</p>
+        <p id="Guess5">Your fifth guess:</p>
+        <p id="Guess6">Your sixth guess:</p>
+    </div>
+    <div style="margin-top: 50px;"></div> <!-- Adds 50px vertical space -->
+    <div class="card" style="width:400px; height:90px">
         <img src="./images/Home_Alone.jpg" alt="Card image">
             <div class="card-body">
               <h4 class="card-title">Joey Salinas</h4>
@@ -37,10 +81,9 @@
               <a href="https://www.instagram.com/joeysalinas/?hl=en">See Profile</a>
             </div>
     </div>
-        <p> 
-        We do not claim responsibility for anything on this page.
-        Next stop is to try and add a block with the game ingrained. Perhaps Python?
-        </p>
-    </div>
+    <p> 
+        We do not claim responsibility for anything on this page
+    </p>
+        </div>
 </body>
 </html>
