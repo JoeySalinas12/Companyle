@@ -1,23 +1,52 @@
-import { useEffect, useState } from "react";
 import GuessForm from "./components/GuessForm";
 import { supabase } from './utils/supabaseClient'; // Supabase client import
+
+
+const getDailyIndex = () => {
+  const now = new Date();
+  
+  // Calculate the current UTC time
+  const utcTime = new Date(now.toUTCString());
+
+  // Set the target time to 12:00 AM UTC
+  const targetTime = new Date(utcTime);
+  targetTime.setUTCHours(0, 0, 0, 0); // Set time to 12:00 AM UTC
+
+  // If current time is before target time, use the previous day
+  if (utcTime < targetTime) {
+    targetTime.setUTCDate(targetTime.getUTCDate() - 1);
+  }
+
+  // Calculate the day of the year based on target time
+  const startOfYear = new Date(Date.UTC(targetTime.getUTCFullYear(), 0, 0));
+  const diff = targetTime.getTime() - startOfYear.getTime();
+  const oneDay = 24 * 60 * 60 * 1000;
+  const dayOfYear = Math.floor(diff / oneDay);
+
+  return dayOfYear;
+};
 
 // Function to fetch company details
 async function fetchCompanyDetails() {
   let { data, error } = await supabase
     .from('companyInfo') // Replace with your actual table name
     .select('*')
-    .limit(1);
 
   if (error) {
     console.error('Error fetching company details:', error);
     return null;
   }
-  // console.log('Company details:', data); // This is used for debugging
+  if (data != null) {
+    // Pick a row based on the current day of the year
+    const dailyIndex = getDailyIndex();
+    const randomIndex = dailyIndex % data.length;
+    // const companyDetails = data[randomIndex];
+    
+    // console.log('Company details:', data); // This is used for debugging
 
-  return data && data.length > 0 ? data[0] : null;
+    return data && data.length > 0 ? data[randomIndex] : null;
+  }
 }
-
 
 export default async function Home() {
   const companyDetails = await fetchCompanyDetails();
@@ -57,86 +86,3 @@ export default async function Home() {
   );
 }
 
-
-
-
-
-// import { supabase } from './utils/supabaseClient'; // Supabase client import
-
-// // Function to fetch company details
-// async function fetchCompanyDetails() {
-//   const { data, error } = await supabase
-//     .from('companyInfo') // Replace with your actual table name
-//     .select('*')
-//     .limit(1);
-
-//   if (error) {
-//     console.error('Error fetching company details:', error);
-//     return null;
-//   }
-
-//   return data && data.length > 0 ? data[0] : null;
-// }
-
-// export default async function Home() {
-//   const companyDetails = await fetchCompanyDetails();
-
-//   if (!companyDetails) return <p>No company details found.</p>;
-
-//   return (
-//     <div className="min-h-screen bg-[#202020] text-gray-100 p-8 flex flex-col items-center">
-//       <div className="max-w-4xl w-full">
-//         {/* Company Details Section */}
-//         <section className="grid grid-cols-2 sm:grid-cols-3 gap-6 p-8 bg-[#3e3e3e] text-gray-100 border border-gray-400 rounded-lg">
-//           <div>
-//             <h3 className="text-lg font-semibold">Symbol</h3>
-//             <p className="text-sm">{companyDetails.symbol || 'N/A'}</p>
-//           </div>
-//           <div>
-//             <h3 className="text-lg font-semibold">Security</h3>
-//             <p className="text-sm">{companyDetails.security || 'N/A'}</p>
-//           </div>
-//           <div>
-//             <h3 className="text-lg font-semibold">GCIS Sector</h3>
-//             <p className="text-sm">{companyDetails.gcis_sector || 'N/A'}</p>
-//           </div>
-//           <div>
-//             <h3 className="text-lg font-semibold">GCIS Sub-Industry</h3>
-//             <p className="text-sm">{companyDetails.gcis_sub_industry || 'N/A'}</p>
-//           </div>
-//           <div>
-//             <h3 className="text-lg font-semibold">Headquarters</h3>
-//             <p className="text-sm">{companyDetails.headquarters || 'N/A'}</p>
-//           </div>
-//           <div>
-//             <h3 className="text-lg font-semibold">Founded</h3>
-//             <p className="text-sm">{companyDetails.founded || 'N/A'}</p>
-//           </div>
-//           <div>
-//             <h3 className="text-lg font-semibold">Market Cap</h3>
-//             <p className="text-sm">{companyDetails.market_cap || 'N/A'}</p>
-//           </div>
-//           <div>
-//             <h3 className="text-lg font-semibold">Stock Price</h3>
-//             <p className="text-sm">{companyDetails.stock_price || 'N/A'}</p>
-//           </div>
-//           <div>
-//             <h3 className="text-lg font-semibold">Revenue</h3>
-//             <p className="text-sm">{companyDetails.revenue || 'N/A'}</p>
-//           </div>
-//         </section>
-
-//         {/* Guessing Section */}
-//         <section className="mt-8 w-full">
-//           <h2 className="text-2xl font-semibold mb-4">Make Your Guesses</h2>
-//           {/* The guessing input boxes and logic follow below */}
-//           <div className="grid grid-cols-1 gap-4">
-//             {/* Render guess input dynamically */}
-//             {/* Render first guess field */}
-//             {/* Render second guess field, etc */}
-//           </div>
-//         </section>
-//       </div>
-//     </div>
-//   );
-// }
