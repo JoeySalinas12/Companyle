@@ -1,5 +1,6 @@
 import { supabase } from './utils/supabaseClient'; // Supabase client import
 import GuessForm from "./components/GuessForm"; // Client component
+import { start } from 'repl';
 
 const getDailyIndex = () => {
   const now = new Date();
@@ -29,7 +30,7 @@ const getDailyIndex = () => {
 async function fetchCompanyDetails() {
   let { data, error } = await supabase
     .from('companyInfo') // Replace with your actual table name
-    .select('*')
+    .select('*');
 
   if (error) {
     console.error('Error fetching company details:', error);
@@ -65,9 +66,20 @@ export default async function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen p-8 font-sans bg-[#1b1b1b] text-[#f0f0f0]">
       {/* Server-side rendered company details */}
       <div className="w-full max-w-4xl mb-12 p-6 bg-[#2c2c2c] shadow-lg rounded-lg">
-        <h1 className="text-2xl font-bold mb-6 text-center text-[#e0a96d]">Name the Company!</h1>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
-          {Object.entries(companyDetails1).map(([label, value]) => (
+        <h1 className="text-2xl font-bold mb-6 text-center text-[#e0a96d]">Can you guess the company of the day?</h1>
+        <div className="grid grid-cols-3 gap-8">
+          {/* Map through the company details, only rendering the first 3 items */}
+          {Object.entries(companyDetails1).slice(1, 4).map(([label, value], index) => (
+            <div key={label} className="bg-[#383838] p-4 rounded-lg shadow-md">
+              <h2 className="text-lg font-semibold text-[#b2bb9b]">{label}</h2>
+              <p className="text-xl font-bold text-[#e0e0e0]">{value}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Fill the remaining items evenly in two rows */}
+        <div className="grid grid-cols-2 gap-8 mt-4">
+          {Object.entries(companyDetails1).slice(4).map(([label, value]) => (
             <div key={label} className="bg-[#383838] p-4 rounded-lg shadow-md">
               <h2 className="text-lg font-semibold text-[#b2bb9b]">{label}</h2>
               <p className="text-xl font-bold text-[#e0e0e0]">{value}</p>
@@ -77,7 +89,7 @@ export default async function Home() {
       </div>
 
       {/* Client-side GuessForm */}
-      <GuessForm companySymbol={companyDetails1.Symbol} />
+      <GuessForm companySecurity={companyDetails1.Security} />
     </div>
   );
 }
