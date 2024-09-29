@@ -1,6 +1,5 @@
-import GuessForm from "./components/GuessForm";
 import { supabase } from './utils/supabaseClient'; // Supabase client import
-
+import GuessForm from "./components/GuessForm"; // Client component
 
 const getDailyIndex = () => {
   const now = new Date();
@@ -26,7 +25,7 @@ const getDailyIndex = () => {
   return dayOfYear;
 };
 
-// Function to fetch company details
+// Server-side data fetching function
 async function fetchCompanyDetails() {
   let { data, error } = await supabase
     .from('companyInfo') // Replace with your actual table name
@@ -36,13 +35,11 @@ async function fetchCompanyDetails() {
     console.error('Error fetching company details:', error);
     return null;
   }
+
   if (data != null) {
     // Pick a row based on the current day of the year
     const dailyIndex = getDailyIndex();
     const randomIndex = dailyIndex % data.length;
-    // const companyDetails = data[randomIndex];
-    
-    // console.log('Company details:', data); // This is used for debugging
 
     return data && data.length > 0 ? data[randomIndex] : null;
   }
@@ -53,7 +50,6 @@ export default async function Home() {
 
   if (!companyDetails) return <p>No company details found.</p>;
 
-  // Server-side rendered company details
   const companyDetails1 = {
     "Security": companyDetails["Security"],
     "Symbol": companyDetails["Symbol"],
@@ -67,7 +63,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 font-sans bg-[#1b1b1b] text-[#f0f0f0]">
-      {/* Key-Value Pairs Section */}
+      {/* Server-side rendered company details */}
       <div className="w-full max-w-4xl mb-12 p-6 bg-[#2c2c2c] shadow-lg rounded-lg">
         <h1 className="text-2xl font-bold mb-6 text-center text-[#e0a96d]">Name the Company!</h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -80,9 +76,8 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Client Component for the Guessing Form */}
-      <GuessForm />
+      {/* Client-side GuessForm */}
+      <GuessForm companySymbol={companyDetails1.Symbol} />
     </div>
   );
 }
-

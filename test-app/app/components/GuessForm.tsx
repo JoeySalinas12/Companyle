@@ -1,11 +1,15 @@
 "use client"; // This ensures the component runs client-side
 
 import { useState } from "react";
+import Modal from './Modal'; // Import Modal component
 
-export default function GuessForm() {
+export default function GuessForm({ companySymbol }: { companySymbol: string }) {
   // State to store the user's guesses
   const [guesses, setGuesses] = useState<string[]>(Array(6).fill(""));
   const [currentGuessIndex, setCurrentGuessIndex] = useState(0);
+  const [attempts, setAttempts] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   // Handler for input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -14,11 +18,26 @@ export default function GuessForm() {
     setGuesses(newGuesses);
   };
 
-  // Handler for form submission
   const handleSubmit = (e: React.FormEvent, index: number) => {
     e.preventDefault();
-    if (index === currentGuessIndex) {
-      setCurrentGuessIndex(currentGuessIndex + 1);
+
+    const currentGuess = guesses[index]; // Get the current guess
+
+    // Check if currentGuess exists and is a string before using toLowerCase()
+    if (currentGuess && typeof currentGuess === 'string') {
+      if (currentGuess.toLowerCase() === companySymbol.toLowerCase()) {
+        setModalMessage(`Correct! The company of the day is ${companySymbol}`);
+        setShowModal(true);
+      } else if (attempts >= 5) {
+        setModalMessage(`Nope! The company of the day is ${companySymbol}`);
+        setShowModal(true);
+      } else {
+        setCurrentGuessIndex(currentGuessIndex + 1);
+      }
+
+      setAttempts(attempts + 1); // Increment attempts after checking
+    } else {
+      console.error("Current guess is invalid or empty");
     }
   };
 
@@ -53,6 +72,8 @@ export default function GuessForm() {
           </form>
         )
       ))}
+      {/* Render Modal here if needed */}
+      {showModal && <Modal message={modalMessage} onClose={() => setShowModal(false)} />}
     </div>
   );
 }
