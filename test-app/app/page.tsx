@@ -1,6 +1,5 @@
 import { supabase } from './utils/supabaseClient'; // Supabase client import
 import GuessForm from "./components/GuessForm"; // Client component
-import { start } from 'repl';
 
 const getDailyIndex = () => {
   const now = new Date();
@@ -28,7 +27,7 @@ const getDailyIndex = () => {
 
 // Server-side data fetching function
 async function fetchCompanyDetails() {
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from('companyInfo') // Replace with your actual table name
     .select('*');
 
@@ -69,7 +68,7 @@ export default async function Home() {
         <h1 className="text-2xl font-bold mb-6 text-center text-[#e0a96d]">Can you guess the company of the day?</h1>
         <div className="grid grid-cols-3 gap-8">
           {/* Map through the company details, only rendering the first 3 items */}
-          {Object.entries(companyDetails1).slice(1, 4).map(([label, value], index) => (
+          {Object.entries(companyDetails1).slice(1, 4).map(([label, value]) => (
             <div key={label} className="bg-[#383838] p-4 rounded-lg shadow-md">
               <h2 className="text-lg font-semibold text-[#b2bb9b]">{label}</h2>
               <p className="text-xl font-bold text-[#e0e0e0]">{value}</p>
